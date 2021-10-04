@@ -73,36 +73,38 @@ if not os.path.isfile(args.cache_file) or (datetime.datetime.fromtimestamp(os.pa
             for r in ec2_reservations:
                 ec2_instances.extend(r['Instances'])
             for instance in ec2_instances:
-                if not instance['State']['Name'].lower() in ['running', 'stopped', 'starting', 'stopping']:
+                if not instance['State']['Name'].lower() in ['running', 'starting']:
                     continue
                 data.append({
-                    'application': next((i['Value'] for i in instance['Tags'] if i['Key'].lower() == 'application'), None),
+                    'application': next((i['Value'] for i in instance['Tags'] if i['Key'].lower() == 'application'), '?') if 'Tags' in instance else '?',
                     'dns_name': instance['PrivateDnsName'],
-                    'environment': next((i['Value'] for i in instance['Tags'] if i['Key'].lower() == 'environment'), None),
+                    'environment': next((i['Value'] for i in instance['Tags'] if i['Key'].lower() == 'environment'), '?') if 'Tags' in instance else '?',
                     'ip_address': instance['PrivateIpAddress'],
-                    'name': next((i['Value'] for i in instance['Tags'] if i['Key'].lower() == 'name'), None),
+                    'name': next((i['Value'] for i in instance['Tags'] if i['Key'].lower() == 'name'), '?') if 'Tags' in instance else '?',
                     'profile': profile,
                     'region': region,
-                    'requester': next((i['Value'] for i in instance['Tags'] if i['Key'].lower() == 'requester'), None),
-                    'role': next((i['Value'] for i in instance['Tags'] if i['Key'].lower() == 'role'), None),
+                    'requester': next((i['Value'] for i in instance['Tags'] if i['Key'].lower() == 'requester'), None) if 'Tags' in instance else None,
+                    'role': next((i['Value'] for i in instance['Tags'] if i['Key'].lower() == 'role'), '?') if 'Tags' in instance else '?',
                     'service': 'ec2',
                     'size': instance['InstanceType'],
                     'state': instance['State']['Name'],
                 })
-    with open(args.cache_file, 'w') as f:
-        for d in data:
-            f.write(
-                '<b>{state}</b>[{profile}/{region}] : {req}{env}/{name} <span weight="light" size="small"><i>({ip_address})</i></span>\n'.format(
-                    profile = d['profile'],
-                    region = d['region'],
-                    service = d['service'],
-                    state = {'running': '↑', 'stopped': '↓', 'stopping': '↘', 'starting': '↗'}[d['state'].lower()],
-                    name = d['name'],
-                    req = (d['requester'] + '/') if d['requester'] else '',
-                    env = d['environment'],
-                    ip_address = d['ip_address']
-                )
+    datastr = []
+    for d in data:
+        datastr.append(
+            '[{region}/{profile}/{env}] : {req}{name} <span weight="light" size="small"><i>({ip_address})</i></span>\n'.format(
+                profile = d['profile'],
+                region = d['region'],
+                service = d['service'],
+                name = d['name'],
+                req = (d['requester'] + '/') if d['requester'] else '',
+                env = d['environment'],
+                ip_address = d['ip_address']
             )
+        )
+    with open(args.cache_file, 'w') as f:
+        for l in sorted(datastr):
+            f.write(l)
 
 (rofi_out, rofi_ec) = rofi(args.cache_file)
 if rofi_out and rofi_ec == 0:
@@ -114,4 +116,5 @@ if rofi_out and rofi_ec == 0:
         rev = rev,
         ip = ip_address
     )
+    os.environ['TERM'] = 'rxvt'
     subprocess.Popen(term, start_new_session=True, shell=True)
