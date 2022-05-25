@@ -111,7 +111,7 @@ if rofi_out and rofi_ec == 0:
     ip_address = rofi_out.split('(', 1)[1].split(')', 1)[0]
     prs = rofi_out.split('[', 1)[1].split(']', 1)[0]
     rev = rofi_out.split(':', 1)[1].split('<', 1)[0].strip()
-    term = "/usr/bin/urxvt +sb -letsp 1 -title 'SSH : [{prs}] : {rev}' -e $HOME/.config/scripts/ssh-wrapper.sh {ip}".format(
+    term = "/usr/bin/alacritty --title 'SSH : [{prs}] : {rev}' -e $HOME/.config/scripts/ssh-wrapper.sh {ip}".format(
         prs = prs,
         rev = rev,
         ip = ip_address
