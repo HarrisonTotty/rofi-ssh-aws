@@ -53,4 +53,7 @@ def get_instances(ignore_start: str) -> list[dict[str, str]]:
                         'ip': data['PrivateIpAddress']
                     }
                     res.append(instance)
-    return sorted(res, key=lambda i: i['name'])
+    return sorted(
+        res,
+        key=lambda i: i['profile'] + '/' + i['region'] + '/' + ('zzz' if i['environment'] is None else i['environment'].lower()) + '/' + ('zzz' if i['application'] is None else i['application'].lower()) + '/' + ('zzz' if i['name'] is None else i['name'].lower()) + '/' + i['id']
+    )
