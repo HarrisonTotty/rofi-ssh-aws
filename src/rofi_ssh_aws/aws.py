@@ -53,4 +53,4 @@ def get_instances(ignore_start: str) -> list[dict[str, str]]:
                         'ip': data['PrivateIpAddress']
                     }
                     res.append(instance)
-    return res
+    return sorted(res, key=lambda i: i['name'])
