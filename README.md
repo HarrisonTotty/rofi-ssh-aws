@@ -1,4 +1,4 @@
-# AWS SSH Rofi Wrapper Script
+# `rofi-ssh-aws`
 
-The following repository contains a simple wrapper script for `rofi` that pulls
-SSH info dynamically from AWS.
+A handy script used by me to list EC2 instances for all AWS profiles and then
+select which one to SSH into via rofi.
