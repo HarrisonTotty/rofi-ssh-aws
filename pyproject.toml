@@ -22,7 +22,7 @@ description = "A script for ssh'ing into AWS EC2 instances via rofi."
 name        = "rofi-ssh-aws"
 readme      = "README.md"
 repository  = "https://github.com/HarrisonTotty/rofi-ssh-aws"
-version     = "2.1.0"
+version     = "2.1.1"
 
 [tool.poetry.dependencies]
 boto3  = "^1.26"
