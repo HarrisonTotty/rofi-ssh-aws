@@ -37,6 +37,7 @@ def get_instances(ignore_start: str) -> list[dict[str, str]]:
             )['Reservations']
             for reservation in reservations:
                 for data in reservation['Instances']:
+                    if not 'Tags' in data: continue
                     tags = {t['Key']: clean_tag_value(t['Value']) for t in data['Tags']}
                     if ignore_start and tags.get('Name', '?').startswith(ignore_start):
                         continue
