@@ -50,7 +50,7 @@ def parse_arguments() -> argparse.Namespace:
         '--terminal-format',
         default = os.getenv(
             'ROFI_SSH_AWS_TERM_FMT',
-            '/usr/bin/alacritty --title "SSH : [{profile}/{region}] {environment}/{application}/{name}/{id} @ {ip}" -e ssh {ip}'
+            '/usr/bin/alacritty --title "SSH : [{profile}/{region}] {environment}/{application}/{name}/{id} @ {ip}" -o "env.TERM={term}" -e ssh {ip}'
         ),
         dest = 'terminal_format',
         help = '[env: ROFI_SSH_AWS_TERM_FMT] Terminal command to run. May be formatted to match any instance field.',

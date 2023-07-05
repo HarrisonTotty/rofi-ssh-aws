@@ -17,6 +17,7 @@ def launch(instance: dict[str, str], term: str, terminal_format: str) -> None:
         requester = instance.get('requester', '?'),
         application = instance.get('application', '?'),
         hostname = instance['hostname'],
-        ip = instance['ip']
+        ip = instance['ip'],
+        term = term
     )
     subprocess.Popen(cmd, start_new_session=True, shell=True)
